@@ -6,6 +6,7 @@ import { ResolutionTimeAnalysis } from "./ResolutionTimeAnalysis";
 
 import { IssuesList } from "./IssueList";
 import { HighLevelView } from "./HighLevelView";
+import { RatingAnalysis } from "./RatingAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -17,9 +18,10 @@ function App() {
                 <TypeDistribution />
                 <PriorityDistribution />
                 <ResolutionTimeAnalysis />
+                <RatingAnalysis />
                 <h1 className="mb-4 mt-4 text-3xl">Frontend Visualisations</h1>
                 <IssuesList />
-                <h1 className="mb-4 text-3xl font-bold">High Level Overview</h1>
+                <h2 className="mb-4 text-3xl font-bold">High Level Overview</h2>
                 <HighLevelView />
                 <h1 className="mb-4 mt-4 text-3xl">Data Display</h1>
                 <Data />
