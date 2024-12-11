@@ -6,6 +6,7 @@ export function IssuesList() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [showHighPriorityOpen, setShowHighPriorityOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     // Fetch the data
     useEffect(() => {
@@ -26,11 +27,20 @@ export function IssuesList() {
             });
     }, []);
 
-    const filteredIssues = showHighPriorityOpen
-        ? issues.filter(
-              (issue) => issue.priority === "high" && issue.status === "open"
-          )
-        : issues;
+    // Filtered Issues method to filter by search or show open high priorities button.
+    const filteredIssues = issues.filter((issue) => {
+        const matchesHighPriorityOpen = showHighPriorityOpen
+            ? issue.priority === "high" && issue.status === "open"
+            : true;
+
+        const matchesSearch = searchTerm
+            ? issue.organization_id
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+            : true;
+
+        return matchesHighPriorityOpen && matchesSearch;
+    });
 
     if (loading) {
         return (
@@ -57,25 +67,36 @@ export function IssuesList() {
     return (
         <div className="p-6 bg-white rounded-lg shadow">
             <div className="flex justify-between items-center mb-4">
-                {/* h2 for the title of this component */}
+                {/* h2 for the title of this component. */}
                 <h2 className="text-xl font-bold">Issues List</h2>
-                {/* Button for filtering open high priorities */}
-                <button
-                    onClick={() =>
-                        setShowHighPriorityOpen(!showHighPriorityOpen)
-                    }
-                    className={`px-4 py-2 rounded-lg ${
-                        showHighPriorityOpen
-                            ? "bg-blue-600 text-white"
-                            : "bg-blue-600 text-white"
-                    }`}
-                >
-                    {showHighPriorityOpen
-                        ? "Show All"
-                        : "Show Open High Priorities Only"}
-                </button>
+                <div className="flex gap-4">
+                    {/* Search input via organization. */}
+                    <input
+                        type="text"
+                        placeholder="Search by organization..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {/* Button for filtering open high priorities. */}
+                    <button
+                        onClick={() =>
+                            setShowHighPriorityOpen(!showHighPriorityOpen)
+                        }
+                        className={`px-4 py-2 rounded-lg ${
+                            showHighPriorityOpen
+                                ? "bg-blue-600 text-white"
+                                : "bg-blue-600 text-white"
+                        }`}
+                    >
+                        {showHighPriorityOpen
+                            ? "Show All"
+                            : "Show Open High Priorities Only"}
+                    </button>
+                </div>
             </div>
             <div className="space-y-4">
+                {/* To display filtered issues. */}
                 {filteredIssues.map((issue) => (
                     <div
                         key={issue.id}
