@@ -5,6 +5,7 @@ export function IssuesList() {
     const [issues, setIssues] = useState<SampleData["results"]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showHighPriorityOpen, setShowHighPriorityOpen] = useState(false);
 
     // Fetch the data
     useEffect(() => {
@@ -24,6 +25,12 @@ export function IssuesList() {
                 setLoading(false);
             });
     }, []);
+
+    const filteredIssues = showHighPriorityOpen
+        ? issues.filter(
+              (issue) => issue.priority === "high" && issue.status === "open"
+          )
+        : issues;
 
     if (loading) {
         return (
@@ -49,10 +56,27 @@ export function IssuesList() {
 
     return (
         <div className="p-6 bg-white rounded-lg shadow">
-            {/* h2 for the title of this component */}
-            <h2 className="text-xl font-bold mb-4">Issues List</h2>
+            <div className="flex justify-between items-center mb-4">
+                {/* h2 for the title of this component */}
+                <h2 className="text-xl font-bold">Issues List</h2>
+                {/* Button for filtering open high priorities */}
+                <button
+                    onClick={() =>
+                        setShowHighPriorityOpen(!showHighPriorityOpen)
+                    }
+                    className={`px-4 py-2 rounded-lg ${
+                        showHighPriorityOpen
+                            ? "bg-blue-600 text-white"
+                            : "bg-blue-600 text-white"
+                    }`}
+                >
+                    {showHighPriorityOpen
+                        ? "Show All"
+                        : "Show Open High Priorities Only"}
+                </button>
+            </div>
             <div className="space-y-4">
-                {issues.map((issue) => (
+                {filteredIssues.map((issue) => (
                     <div
                         key={issue.id}
                         className="border rounded-lg p-4 hover:bg-gray-50"
